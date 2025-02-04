@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tms/src/pages/menu/main_menu_page.dart';
+import 'package:tms/src/pages/login/login_page.dart';
 
 void main() {
   runApp(ProviderScope(child: MainApp()));
@@ -18,7 +18,7 @@ class MainApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: MainMenuPage(),
+      home: LoginPage(),
     );
   }
 }
