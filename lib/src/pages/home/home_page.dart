@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tms/src/apptheme.dart';
 import 'package:tms/src/pages/home/widgets/appbar_home.dart';
+import 'package:tms/src/pages/home/widgets/summary_home.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(
       child: Column(
         children: [
           Stack(
@@ -26,8 +28,8 @@ class _HomePageState extends State<HomePage> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 240,
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
+                decoration: BoxDecoration(
+                  color: AppTheme.sppBlue,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30),
@@ -54,107 +56,62 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppTheme.white,
                       ),
                     ),
                   ],
                 ),
               ),
               Positioned(
-                bottom: -40,
-                left: MediaQuery.of(context).size.width * 0.08,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                bottom: -140,
+                left: MediaQuery.of(context).size.width * 0.05,
+                child: Column(
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Icon(
-                              size: 50,
-                              color: Colors.blueAccent,
-                              Icons.check_circle_outline),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Text(
-                            '2',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blueAccent,
-                            ),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SummaryHome(
+                          text: "ค้างรับสินค้า",
+                          count: '3',
+                          iconData: Icons.check_circle_outline,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        SummaryHome(
+                          text: "ค้างส่งสินค้า",
+                          count: '5',
+                          iconData: Icons.check_circle_outline,
+                        ),
+                      ],
                     ),
                     const SizedBox(
-                      width: 10,
+                      height: 10,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Icon(
-                              size: 50,
-                              color: Colors.blueAccent,
-                              Icons.access_time),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Text(
-                            '5',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blueAccent,
-                            ),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SummaryHome(
+                          text: "COD ค้างโอน",
+                          count: '4',
+                          iconData: Icons.check_circle_outline,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        SummaryHome(
+                          text: "ค้างส่งคืนสินค้า",
+                          count: '0',
+                          iconData: Icons.check_circle_outline,
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 80),
+          const SizedBox(height: 180),
           AppbarHome(),
         ],
       ),

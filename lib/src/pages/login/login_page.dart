@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tms/src/apptheme.dart';
 import 'package:tms/src/images_asset.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.blue.shade800, Colors.blue.shade500],
+              colors: [AppTheme.sppBlue20, AppTheme.sppBlue],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -39,12 +41,17 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Text(
                     "TMS",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.white,
+                    ),
                   ),
                   SizedBox(height: 30),
                   Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppTheme.white,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -86,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                            backgroundColor: AppTheme.sppBlue,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 100, vertical: 15),
                             shape: RoundedRectangleBorder(
@@ -98,10 +105,12 @@ class _LoginPageState extends State<LoginPage> {
                             String password = passwordController.text;
                             debugPrint(
                                 "Username: $username, Password: $password");
+                            context.go('/home');
                           },
                           child: Text(
                             "Login",
-                            style: TextStyle(fontSize: 16),
+                            style:
+                                TextStyle(fontSize: 16, color: AppTheme.white),
                           ),
                         ),
                       ],

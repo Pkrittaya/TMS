@@ -36,6 +36,15 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^2.6.1
   cached_network_image: ^3.4.1
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+  form_builder_validators: ^11.1.1
+  permission_handler: ^11.3.1
+  flutter_screenutil: ^5.9.3
+  loading_animation_widget: ^1.3.0
+  go_router: ^14.7.2
+  flutter_native_splash: ^2.4.4
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:
@@ -77,11 +86,9 @@ flutter:
   fonts:
     - family: Kanit
       fonts:
-        - asset: fonts/Kanit-Regular.ttf
-        - asset: fonts/Kanit-Italic.ttf
-          style: italic
-        - asset: fonts/Kanit-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/Kanit-Regular.ttf
+        - asset: assets/fonts/Kanit-Italic.ttf
+        - asset: assets/fonts/Kanit-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

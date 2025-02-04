@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tms/src/apptheme.dart';
 
 class AppbarHome extends StatefulWidget {
   const AppbarHome({super.key});
@@ -9,10 +10,9 @@ class AppbarHome extends StatefulWidget {
 
 class _AppbarHomeState extends State<AppbarHome> {
   List<Map<String, dynamic>> iconData = [
-    {'icon': Icons.emoji_transportation, 'text': 'Transport'},
-    {'icon': Icons.edit_document, 'text': 'Edit'},
-    {'icon': Icons.supervised_user_circle_outlined, 'text': 'User'},
-    {'icon': Icons.favorite, 'text': 'Favorite'},
+    {'icon': Icons.emoji_transportation, 'text': 'บันทึกระยะทาง'},
+    {'icon': Icons.edit_document, 'text': 'COD'},
+    {'icon': Icons.supervised_user_circle_outlined, 'text': 'ประวัติการจัดส่ง'},
   ];
 
   @override
@@ -20,18 +20,18 @@ class _AppbarHomeState extends State<AppbarHome> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List.generate(
-        4,
+        3,
         (index) {
           return Column(
             children: [
               Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppTheme.sppBlue,
                   borderRadius: BorderRadius.circular(15), // มุมมน
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: AppTheme.black20,
                       blurRadius: 10,
                       spreadRadius: 2,
                       offset: Offset(0, 4),
@@ -44,7 +44,7 @@ class _AppbarHomeState extends State<AppbarHome> {
                   },
                   icon: Icon(
                     iconData[index]['icon'],
-                    color: Colors.red,
+                    color: AppTheme.white,
                     size: 30,
                   ),
                 ),
@@ -55,7 +55,7 @@ class _AppbarHomeState extends State<AppbarHome> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: AppTheme.black,
                 ),
               ),
             ],
