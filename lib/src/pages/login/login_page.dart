@@ -1,19 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tms/api/providers/data_provider.dart';
 import 'package:tms/src/apptheme.dart';
 import 'package:tms/src/images_asset.dart';
+import 'package:tms/src/prefs_and_app_data.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class _LoginPageState extends ConsumerState<LoginPage> {
+  final TextEditingController usernameController =
+      TextEditingController(text: "67261");
+  final TextEditingController passwordController =
+      TextEditingController(text: "111111");
   bool _isPasswordVisible = false;
+  PrefsAndAppData prefs = PrefsAndAppData();
+
+  Future<void> onpressLogin() async {
+    String username = usernameController.text;
+    String password = passwordController.text;
+
+    try {
+      final response = await ref
+          .read(authLogin({"userName": username, "password": password}).future);
+
+      if (response.data != null) {
+        String accessToken = response.data?.token ?? "";
+        await prefs.saveAccessToken(accessToken);
+        debugPrint("Access Token: $accessToken");
+
+        context.go('/home');
+      } else {
+        debugPrint("Login failed: Invalid response");
+      }
+    } catch (e) {
+      debugPrint("Error signing in: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,12 +128,8 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () {
-                            String username = usernameController.text;
-                            String password = passwordController.text;
-                            debugPrint(
-                                "Username: $username, Password: $password");
-                            context.go('/home');
+                          onPressed: () async {
+                            await onpressLogin();
                           },
                           child: Text(
                             "Login",

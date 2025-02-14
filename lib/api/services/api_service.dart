@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tms/api/models/myjob_model.dart';
+import 'package:tms/api/models/request/asset_req.dart';
+import 'package:tms/api/models/response/asset_model.dart';
+import 'package:tms/api/models/response/auth_login_model.dart';
+import 'package:tms/api/models/response/myjob_model.dart';
+import 'package:tms/src/prefs_and_app_data.dart';
 import '../core/dio_provider.dart';
 
 // Provider สำหรับ ApiService
@@ -15,43 +19,82 @@ class ApiService {
 
   ApiService(this._dio);
 
-  Future<List<MyjobModel>> fetchPosts() async {
+  PrefsAndAppData prefs = PrefsAndAppData();
+
+  // Future<List<MyjobModel>> fetchMyjob() async {
+  //   try {
+  //     final response = await _dio.get('/posts');
+  //     return (response.data as List)
+  //         .map((post) => MyjobModel.fromJson(post))
+  //         .toList();
+  //   } catch (e) {
+  //     throw Exception('Failed to fetch posts');
+  //   }
+  // }
+
+  // Future<MyjobModel> postMyJob(String title, String body) async {
+  //   try {
+  //     final response = await _dio.post("/posts", data: {
+  //       "title": title,
+  //       "body": body,
+  //       "userId": 1,
+  //     });
+
+  //     return MyjobModel.fromJson(response.data);
+  //   } catch (e) {
+  //     throw Exception("Failed to create post");
+  //   }
+  // }
+
+  // Future<MyjobModel> pushMyJob(int id, String title, String body) async {
+  //   try {
+  //     final response = await _dio.put("/posts/$id", data: {
+  //       "id": id,
+  //       "title": title,
+  //       "body": body,
+  //       "userId": 1,
+  //     });
+
+  //     return MyjobModel.fromJson(response.data);
+  //   } catch (e) {
+  //     throw Exception("Failed to update post");
+  //   }
+  // }
+
+  //*********** Login ***********//
+  Future<AuthLoginModel> authLogin(String username, String password) async {
     try {
-      final response = await _dio.get('/posts');
-      return (response.data as List)
-          .map((post) => MyjobModel.fromJson(post))
-          .toList();
+      final response = await _dio.post("auth/login", data: {
+        "userName": username,
+        "password": password,
+      });
+
+      if (response.statusCode == 200) {
+        return AuthLoginModel.fromJson(response.data);
+      } else {
+        throw Exception("Invalid login response");
+      }
     } catch (e) {
-      throw Exception('Failed to fetch posts');
+      throw Exception("Failed to create login");
     }
   }
 
-  Future<MyjobModel> postMyJob(String title, String body) async {
+  //*********** Test Asset ***********//
+  Future<AssetModel> fetchAsset({AssetReq? data}) async {
     try {
-      final response = await _dio.post("/posts", data: {
-        "title": title,
-        "body": body,
-        "userId": 1,
-      });
-
-      return MyjobModel.fromJson(response.data);
+      final accessToken = await prefs.getAccessToken();
+      final response = await _dio.get(
+        'assets',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${accessToken}',
+          },
+        ),
+        queryParameters: data?.toMap(),
+      );
+      return AssetModel.fromJson(response.data);
     } catch (e) {
-      throw Exception("Failed to create post");
-    }
-  }
-
-  Future<MyjobModel> pushMyJob(int id, String title, String body) async {
-    try {
-      final response = await _dio.put("/posts/$id", data: {
-        "id": id,
-        "title": title,
-        "body": body,
-        "userId": 1,
-      });
-
-      return MyjobModel.fromJson(response.data);
-    } catch (e) {
-      throw Exception("Failed to update post");
+      throw Exception('Failed to fetch asset');
     }
   }
 }

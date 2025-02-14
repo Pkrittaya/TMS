@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tms/api/models/myjob_model.dart';
+import 'package:tms/api/models/response/myjob_model.dart';
 import 'package:tms/api/providers/data_provider.dart';
 import 'package:tms/src/apptheme.dart';
 
@@ -18,6 +18,7 @@ class _MyjobPageState extends ConsumerState<MyjobPage> {
 
   @override
   void initState() {
+    debugPrint("my job page");
     super.initState();
   }
 
@@ -76,24 +77,33 @@ class _MyjobPageState extends ConsumerState<MyjobPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             height: MediaQuery.of(context).size.height * 0.65,
-            child: ref.watch(fetchMyjobProvider).when(
+            child: ref.watch(fetchAssetProvider).when(
                   data: (jobList) {
                     return ListView.builder(
-                      itemCount: jobList.length - 80,
+                      itemCount: jobList.data?.length,
                       itemBuilder: (context, index) {
-                        final job = jobList[index];
+                        final job = jobList.data?[index];
                         return InkWell(
                           onTap: () {
-                            // context.go('/myjobDrop');
+                            context.go('/myjobDrop');
                             // ref.read(createMyjobProvider({
                             //   "title": "New Post",
                             //   "body": "This is a new post"
                             // }));
-                            ref.read(updateMyjobProvider({
-                              "id": job.id,
-                              "title": "Updated Title",
-                              "body": "Updated content"
-                            }));
+                            // ref.read(assetFilterProvider.notifier).state =
+                            //     AssetReq(
+                            //   page: 1,
+                            //   perPage: 10,
+                            //   statusCode: 2,
+                            //   assetTypeCode: 1,
+                            //   assetCategoryCode: 3,
+                            // );
+
+                            // ref.read(updateMyjobProvider({
+                            //   "id": 'dddd',
+                            //   "title": "Updated Title",
+                            //   "body": "Updated content"
+                            // }));
                           },
                           child: Container(
                             alignment: Alignment.topLeft,
@@ -153,7 +163,7 @@ class _MyjobPageState extends ConsumerState<MyjobPage> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'S-VSM-20250201-002${index + 1}',
+                                            'S-VSM-20250201-002${job?.assetId ?? ""}',
                                             style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,

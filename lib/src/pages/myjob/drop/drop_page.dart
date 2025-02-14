@@ -39,7 +39,7 @@ class _DropPageState extends State<DropPage> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    context.go('/myjobDropDetail');
+                    context.go('/myjobDropDetail?drop=${index}');
                   },
                   child: Container(
                     alignment: Alignment.topLeft,

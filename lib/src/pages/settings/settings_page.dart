@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tms/src/apptheme.dart';
 import 'package:tms/src/pages/menu/bottom_menu_provider.dart';
 import 'package:tms/src/pages/settings/widgets/more_item_setting.dart';
+import 'package:tms/src/prefs_and_app_data.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -13,6 +14,16 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
+  PrefsAndAppData prefs = PrefsAndAppData();
+
+  Future<void> onpressLogout() async {
+    final accessToken = await prefs.getAccessToken();
+    debugPrint(accessToken);
+    await prefs.deleteAccessToken();
+    context.go('/');
+    ref.read(bottomMenuProvider.notifier).state = 0;
+  }
+
   @override
   void initState() {
     debugPrint('test setting');
@@ -85,9 +96,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: () {
-              context.go('/');
-              ref.read(bottomMenuProvider.notifier).state = 0;
+            onPressed: () async {
+              onpressLogout();
             },
             child: Text(
               "logout",

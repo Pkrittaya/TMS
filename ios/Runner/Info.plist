@@ -45,5 +45,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library</string>	
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This application requires location services to show information about station</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This application requires location services to show information about station</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This application requires location services to show information about station</string>
+
 </dict>
 </plist>
