@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:tms/api/models/response/myjob_model.dart';
 import 'package:tms/api/providers/data_provider.dart';
 import 'package:tms/src/apptheme.dart';
+import 'package:tms/src/pages/myjob/widgets/card_detail.dart';
+import 'package:tms/src/pages/myjob/widgets/card_job_header.dart';
 
 class MyjobPage extends ConsumerStatefulWidget {
   const MyjobPage({super.key});
@@ -15,6 +17,14 @@ class MyjobPage extends ConsumerStatefulWidget {
 class _MyjobPageState extends ConsumerState<MyjobPage> {
   TextEditingController searchController = TextEditingController();
   List<MyjobModel> postsAsync = List.empty();
+  List<bool> visibleDetails = List.generate(0, (index) => false);
+
+  void onHideShowDetailCart(int index) {
+    debugPrint("${visibleDetails[index]}");
+    setState(() {
+      visibleDetails[index] = !visibleDetails[index];
+    });
+  }
 
   @override
   void initState() {
@@ -83,6 +93,7 @@ class _MyjobPageState extends ConsumerState<MyjobPage> {
                       itemCount: jobList.data?.length,
                       itemBuilder: (context, index) {
                         final job = jobList.data?[index];
+                        visibleDetails.add(false);
                         return InkWell(
                           onTap: () {
                             context.go('/myjobDrop');
@@ -105,158 +116,113 @@ class _MyjobPageState extends ConsumerState<MyjobPage> {
                             //   "body": "Updated content"
                             // }));
                           },
-                          child: Container(
-                            alignment: Alignment.topLeft,
-                            margin: EdgeInsets.symmetric(vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppTheme.white,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppTheme.grayD4A50,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
+                          child: CardDetail(
+                              child: Column(children: [
+                            CardJobHeader(
+                              index: index + 1,
+                              toggle: visibleDetails[index],
+                              onTap: () {
+                                onHideShowDetailCart(index);
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'S-VSM-20250201-002${job?.assetId ?? ""}',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    'ส่งให้ลูกค้า : 107 ชิ้น',
+                                    style: TextStyle(
+                                      color: AppTheme.black60,
+                                    ),
+                                  ),
+                                  Text(
+                                    'รถขนส่ง : 6ขร6309',
+                                    style: TextStyle(
+                                      color: AppTheme.black60,
+                                    ),
+                                  ),
+                                  Text(
+                                    'วันที่เข้าไปรับสินค้า : 17/01/2025 07:00',
+                                    style: TextStyle(
+                                      color: AppTheme.black60,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: Column(
-                              children: [
-                                Row(
+                            Visibility(
+                              visible: visibleDetails[index],
+                              child: Divider(
+                                color: AppTheme.black20,
+                                indent: 10,
+                                endIndent: 10,
+                              ),
+                            ),
+                            Visibility(
+                              visible: visibleDetails[index],
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.sppBlue,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '${index + 1}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppTheme.white,
-                                          ),
-                                        ),
-                                      ),
+                                    renderDistance(
+                                        icon: Icons.add_a_photo_rounded,
+                                        text: "โครงการจัดส่ง",
+                                        value: "โครงการจัดส่ง VSM"),
+                                    renderDistance(
+                                        icon: Icons.add_a_photo_rounded,
+                                        text: "ต้นทาง",
+                                        value: "VSM"),
+                                    renderDistance(
+                                        icon: Icons.add_a_photo_rounded,
+                                        text: "ปลายทาง",
+                                        value: "Customer"),
+                                    Divider(
+                                      color: AppTheme.black20,
                                     ),
-                                    const SizedBox(
-                                      width: 10,
+                                    Wrap(
+                                      spacing: 16, // ระยะห่างระหว่าง Item
+                                      runSpacing: 16, // ระยะห่างระหว่างบรรทัด
+                                      alignment: WrapAlignment.spaceBetween,
+                                      children: [
+                                        renderItemData(
+                                            count: "2", text: "Drop"),
+                                        renderItemData(
+                                            count: "1", text: "ใบนำส่ง"),
+                                        renderItemData(
+                                            count: "11",
+                                            text: "น้ำหนักรวม (kg.)"),
+                                        renderItemData(
+                                            count: "11",
+                                            text: "COD (บาท)",
+                                            color: AppTheme.orange),
+                                      ],
                                     ),
-                                    Container(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 10),
-                                        child: Icon(Icons.airline_seat_flat)),
-                                    const SizedBox(
-                                      width: 10,
+                                    Divider(
+                                      color: AppTheme.black20,
                                     ),
-                                    Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'S-VSM-20250201-002${job?.assetId ?? ""}',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppTheme.black,
-                                            ),
-                                          ),
-                                          Text(
-                                            'ส่งให้ลูกค้า : 107 ชิ้น',
-                                            style: TextStyle(
-                                              color: AppTheme.black60,
-                                            ),
-                                          ),
-                                          Text(
-                                            'รถขนส่ง : 6ขร6309',
-                                            style: TextStyle(
-                                              color: AppTheme.black60,
-                                            ),
-                                          ),
-                                          Text(
-                                            'วันที่เข้าไปรับสินค้า : 17/01/2025 07:00',
-                                            style: TextStyle(
-                                              color: AppTheme.black60,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        renderDetailCar(
+                                            text: "ระยะทาง (km)", count: "100"),
+                                        renderDetailCar(
+                                            text: "น้ำมัน (ลิตร)",
+                                            count: "0.22"),
+                                      ],
+                                    )
                                   ],
                                 ),
-                                Divider(
-                                  color: AppTheme.black20,
-                                  indent: 10,
-                                  endIndent: 10,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      renderDistance(
-                                          icon: Icons.add_a_photo_rounded,
-                                          text: "โครงการจัดส่ง",
-                                          value: "โครงการจัดส่ง VSM"),
-                                      renderDistance(
-                                          icon: Icons.add_a_photo_rounded,
-                                          text: "ต้นทาง",
-                                          value: "VSM"),
-                                      renderDistance(
-                                          icon: Icons.add_a_photo_rounded,
-                                          text: "ปลายทาง",
-                                          value: "Customer"),
-                                      Divider(
-                                        color: AppTheme.black20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          renderItemData(
-                                              count: "2", text: "Drop"),
-                                          renderItemData(
-                                              count: "1", text: "ใบนำส่ง"),
-                                          renderItemData(
-                                              count: "11",
-                                              text: "น้ำหนักรวม (kg.)"),
-                                          renderItemData(
-                                              count: "11",
-                                              text: "COD (บาท)",
-                                              color: AppTheme.orange),
-                                        ],
-                                      ),
-                                      Divider(
-                                        color: AppTheme.black20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          renderDetailCar(
-                                              text: "ระยะทาง (km)",
-                                              count: "100"),
-                                          renderDetailCar(
-                                              text: "น้ำมัน (ลิตร)",
-                                              count: "0.22"),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
+                          ])),
                         );
                       },
                     );

@@ -16,8 +16,8 @@ class MainMenuPage extends ConsumerWidget {
 
     final List<Widget> pages = [
       const HomePage(),
-      NewjobPage(),
       MyjobPage(),
+      NewjobPage(),
       SettingsPage(),
     ];
 

@@ -52,6 +52,7 @@ dependencies:
   signature: ^5.5.0
   geolocator: ^13.0.2
   google_maps_flutter: ^2.10.0
+  flutter_slidable: ^4.0.0
 
 dev_dependencies:
   flutter_test:

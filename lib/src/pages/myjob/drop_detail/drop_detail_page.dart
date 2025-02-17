@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tms/src/apptheme.dart';
+import 'package:tms/src/pages/myjob/widgets/card_detail.dart';
+import 'package:tms/src/pages/myjob/widgets/card_job_header.dart';
 
 class DropDetailPage extends ConsumerStatefulWidget {
   const DropDetailPage({super.key, required this.drop});
@@ -13,6 +16,20 @@ class DropDetailPage extends ConsumerStatefulWidget {
 
 class _DropDetailPageState extends ConsumerState<DropDetailPage> {
   TextEditingController searchController = TextEditingController();
+  List<bool> visibleDetails = List.generate(0, (index) => false);
+  List<bool> isChecked = List.generate(0, (index) => false);
+
+  void onHideShowDetailCart(int index) {
+    setState(() {
+      visibleDetails[index] = !visibleDetails[index];
+    });
+  }
+
+  void onCheckBoxCard(int index, bool value) {
+    setState(() {
+      isChecked[index] = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,98 +73,86 @@ class _DropDetailPageState extends ConsumerState<DropDetailPage> {
             ),
           ),
           Container(
-            child: InkWell(
-              onTap: () {
-                context.go('/myjobDeliveryNote');
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: MediaQuery.of(context).size.height * 0.65,
-                child: ListView.builder(
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {},
-                      child: Container(
-                        alignment: Alignment.topLeft,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: AppTheme.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade300),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.grayD4A50,
-                              blurRadius: 5,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: MediaQuery.of(context).size.height * 0.65,
+              child: ListView.builder(
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  visibleDetails.add(false);
+                  isChecked.add(false);
+                  return Slidable(
+                    key: ValueKey(index), // ใช้ Key เพื่อระบุแต่ละรายการ
+                    endActionPane: ActionPane(
+                      motion: ScrollMotion(), // หรือใช้ `DrawerMotion()`
+                      children: [
+                        Container(
+                          child: SlidableAction(
+                            onPressed: (context) {
+                              // กด Edit
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Editing ${index}')),
+                              );
+                            },
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                            label: 'Edit',
+                          ),
                         ),
-                        child: Column(
-                          children: [
-                            Row(
+                      ],
+                    ),
+                    child: CardDetail(
+                      child: Column(
+                        children: [
+                          CardJobHeader(
+                            index: index + 1,
+                            toggle: visibleDetails[index],
+                            onTap: () {
+                              onHideShowDetailCart(index);
+                            },
+                            checkbox: (widget.drop == "0")
+                                ? Checkbox(
+                                    checkColor: AppTheme.white,
+                                    value: isChecked[index],
+                                    onChanged: (bool? value) {
+                                      onCheckBoxCard(index, value!);
+                                    },
+                                  )
+                                : null,
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.sppBlue,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '${index + 1}',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppTheme.white,
-                                      ),
-                                    ),
+                                Text(
+                                  'DBR680100040${index}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.black,
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Icon(Icons.airline_seat_flat)),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'S-VSM-20250201-002${index}',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        'โครงการจัดส่ง : 107 ชิ้น',
-                                        style: TextStyle(
-                                          color: AppTheme.black60,
-                                        ),
-                                      ),
-                                    ],
+                                Center(
+                                  child: Text(
+                                    'โครงการจัดส่ง : โครงการจัดส่ง VSM',
+                                    style: TextStyle(
+                                      color: AppTheme.black60,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            Divider(
+                          ),
+                          Visibility(
+                            visible: visibleDetails[index],
+                            child: Divider(
                               color: AppTheme.black20,
                               indent: 10,
                               endIndent: 10,
                             ),
-                            Padding(
+                          ),
+                          Visibility(
+                            visible: visibleDetails[index],
+                            child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,12 +197,12 @@ class _DropDetailPageState extends ConsumerState<DropDetailPage> {
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -215,7 +220,9 @@ class _DropDetailPageState extends ConsumerState<DropDetailPage> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.sppBlue,
+                backgroundColor: (isChecked.length > 0)
+                    ? AppTheme.sppBlue
+                    : AppTheme.sppBlue40,
               ),
               child: Text(
                 'ยืนยันการส่งสินค้า',
@@ -270,47 +277,6 @@ class _DropDetailPageState extends ConsumerState<DropDetailPage> {
           style: TextStyle(color: AppTheme.black60),
         )
       ],
-    );
-  }
-
-  Widget renderDetailCar(
-      {String text = "",
-      String count = "",
-      IconData icon = Icons.access_time_sharp}) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.grayD4A50,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppTheme.grayD4A50),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.grayD4A50,
-            blurRadius: 5,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Icon(icon),
-          const SizedBox(
-            width: 20,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(text),
-              Text(
-                count,
-                style: TextStyle(color: AppTheme.green),
-                softWrap: true,
-                overflow: TextOverflow.visible,
-              )
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

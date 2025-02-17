@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tms/src/apptheme.dart';
+import 'package:tms/src/pages/myjob/widgets/card_detail.dart';
 
 class DropPage extends StatefulWidget {
   const DropPage({super.key});
@@ -41,22 +42,8 @@ class _DropPageState extends State<DropPage> {
                   onTap: () {
                     context.go('/myjobDropDetail?drop=${index}');
                   },
-                  child: Container(
-                    alignment: Alignment.topLeft,
+                  child: CardDetail(
                     padding: EdgeInsets.all(16),
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: AppTheme.white,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey.shade300),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppTheme.grayD4A50,
-                          blurRadius: 5,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
                     child: Column(
                       children: [
                         Row(

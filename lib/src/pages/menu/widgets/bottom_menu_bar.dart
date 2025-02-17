@@ -16,9 +16,9 @@ class BottomMenuBar extends ConsumerWidget {
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "หน้าหลัก"),
         BottomNavigationBarItem(
-            icon: Icon(Icons.sports_motorsports), label: "งานใหม่"),
-        BottomNavigationBarItem(
             icon: Icon(Icons.sports_motorsports), label: "งานของฉัน"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.sports_motorsports), label: "คืนสินค้า"),
         BottomNavigationBarItem(icon: Icon(Icons.settings), label: "ตั้งค่า"),
       ],
     );
