@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tms/api/models/response/asset_model.dart';
 import 'package:tms/api/models/response/auth_login_model.dart';
-import 'package:tms/api/models/response/myjob_model.dart';
+import 'package:tms/api/models/response/logistic_transection_model.dart';
 import 'package:tms/api/providers/request_provider.dart';
 import '../services/api_service.dart';
 
@@ -33,10 +32,11 @@ final authLogin = FutureProvider.family<AuthLoginModel, Map<String, String>>(
       .authLogin(data["userName"]!, data["password"]!);
 });
 
-//*********** Test Asset ***********//
-final fetchAssetProvider = FutureProvider.autoDispose<AssetModel>((ref) async {
+//*********** List logistic transection ***********//
+final fetchLogisticTransection =
+    FutureProvider.autoDispose<LogisticTransectionModel>((ref) async {
   final apiService = ref.watch(apiServiceProvider);
-  final request = ref.watch(assetFilterProvider);
+  final request = ref.watch(logisticTransectionFilterProvider);
 
-  return apiService.fetchAsset(data: request);
+  return apiService.fetchLogisticTransection(data: request);
 });

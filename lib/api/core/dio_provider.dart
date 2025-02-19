@@ -11,6 +11,10 @@ final dioProvider = Provider<Dio>((ref) {
   //   ),
   // );
 
+  /****** *********/
+  // https://dev-api.superpart.co.th/api-spp/v1/
+  // https://dev-tms-api.superpart.co.th/api-tms/v1/
+
   return Dio(
     BaseOptions(
       baseUrl: 'https://dev-api.superpart.co.th/api-spp/v1/',

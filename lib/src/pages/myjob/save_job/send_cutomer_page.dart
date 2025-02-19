@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tms/src/apptheme.dart';
 import 'package:tms/src/pages/myjob/save_job/widgets/image_product.dart';
+import 'package:tms/src/pages/myjob/save_job/widgets/map_location.dart';
 import 'package:tms/src/pages/myjob/save_job/widgets/signature_user.dart';
 
 class SendCutomerPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class _SendCutomerPageState extends State<SendCutomerPage> {
   File? image;
   Uint8List? signatureImage;
   TextEditingController mileageController = TextEditingController(text: "");
+  Position? currentPosition;
 
   void onSaveImage(File? img) async {
     if (img != null) {
@@ -35,6 +38,44 @@ class _SendCutomerPageState extends State<SendCutomerPage> {
         signatureImage = image;
       });
     }
+  }
+
+  Future<void> getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // ตรวจสอบว่า Location service เปิดอยู่หรือไม่
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // ถ้า Location service ปิดอยู่
+      return Future.error('Location services are disabled.');
+    }
+
+    // ขออนุญาตเข้าถึงตำแหน่ง
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied');
+    }
+
+    // ดึงตำแหน่งปัจจุบัน
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      currentPosition = position;
+    });
+  }
+
+  @override
+  void initState() {
+    getCurrentLocation();
+    super.initState();
   }
 
   @override
@@ -71,6 +112,12 @@ class _SendCutomerPageState extends State<SendCutomerPage> {
                 ),
                 SignatureUser(
                     title: "ลูกค้า", onChangeSignature: onChangeSignature),
+                const SizedBox(
+                  height: 16,
+                ),
+                MapLocation(
+                  currentPosition: currentPosition,
+                ),
                 const SizedBox(
                   height: 16,
                 ),

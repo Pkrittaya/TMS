@@ -17,7 +17,7 @@ class DropDetailPage extends ConsumerStatefulWidget {
 class _DropDetailPageState extends ConsumerState<DropDetailPage> {
   TextEditingController searchController = TextEditingController();
   List<bool> visibleDetails = List.generate(0, (index) => false);
-  List<bool> isChecked = List.generate(0, (index) => false);
+  List<Map<int, bool>> isChecked = [];
 
   void onHideShowDetailCart(int index) {
     setState(() {
@@ -27,8 +27,18 @@ class _DropDetailPageState extends ConsumerState<DropDetailPage> {
 
   void onCheckBoxCard(int index, bool value) {
     setState(() {
-      isChecked[index] = value;
+      isChecked
+          .removeWhere((item) => item.containsKey(index)); // ลบของเก่าออกก่อน
+      isChecked.add({index: value}); // เพิ่มค่าใหม่
     });
+  }
+
+  void onClickConfirmItem() {
+    if (widget.drop == "0") {
+      context.go('/pickup?drop=${widget.drop}');
+    } else {
+      context.go('/sendCustomer?drop=${widget.drop}');
+    }
   }
 
   @override
@@ -73,165 +83,199 @@ class _DropDetailPageState extends ConsumerState<DropDetailPage> {
             ),
           ),
           Container(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              height: MediaQuery.of(context).size.height * 0.65,
-              child: ListView.builder(
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  visibleDetails.add(false);
-                  isChecked.add(false);
-                  return Slidable(
-                    key: ValueKey(index), // ใช้ Key เพื่อระบุแต่ละรายการ
-                    endActionPane: ActionPane(
-                      motion: ScrollMotion(), // หรือใช้ `DrawerMotion()`
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            height: MediaQuery.of(context).size.height * 0.65,
+            child: ListView.builder(
+              itemCount: 3,
+              itemBuilder: (context, index) {
+                visibleDetails.add(false);
+
+                return Slidable(
+                  key: ValueKey(index),
+                  endActionPane: ActionPane(
+                    motion: ScrollMotion(),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: GestureDetector(
+                          onTap: () {
+                            onClickConfirmItem();
+                          },
+                          child: Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 4,
+                                  offset: Offset(2, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(Icons.edit, color: AppTheme.sppBlue),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          context.go('/myjobDeliveryNote');
+                        },
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 4,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: Icon(Icons.remove_red_eye,
+                              color: AppTheme.sppBlue),
+                        ),
+                      ),
+                    ],
+                  ),
+                  child: CardDetail(
+                    child: Column(
                       children: [
-                        Container(
-                          child: SlidableAction(
-                            onPressed: (context) {
-                              // กด Edit
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Editing ${index}')),
-                              );
-                            },
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                            icon: Icons.edit,
-                            label: 'Edit',
+                        CardJobHeader(
+                          index: index + 1,
+                          toggle: visibleDetails[index],
+                          onTap: () {
+                            onHideShowDetailCart(index);
+                          },
+                          checkbox: (widget.drop == "0")
+                              ? Checkbox(
+                                  checkColor: AppTheme.white,
+                                  value: isChecked.any(
+                                          (item) => item.containsKey(index))
+                                      ? isChecked
+                                          .firstWhere(
+                                              (item) => item.containsKey(index))
+                                          .values
+                                          .first
+                                      : false,
+                                  onChanged: (bool? value) {
+                                    onCheckBoxCard(index, value ?? false);
+                                  },
+                                )
+                              : null,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'DBR680100040${index}',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.black,
+                                ),
+                              ),
+                              Center(
+                                child: Text(
+                                  'โครงการจัดส่ง : โครงการจัดส่ง VSM',
+                                  style: TextStyle(
+                                    color: AppTheme.black60,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: visibleDetails[index],
+                          child: Divider(
+                            color: AppTheme.black20,
+                            indent: 10,
+                            endIndent: 10,
+                          ),
+                        ),
+                        Visibility(
+                          visible: visibleDetails[index],
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                renderDistance(
+                                    icon: Icons.add_a_photo_rounded,
+                                    text: "ผู้ว่าจ้าง",
+                                    value: "ผู้ประกอบการ VSM"),
+                                renderDistance(
+                                    icon: Icons.add_a_photo_rounded,
+                                    text: "วันที่จัดส่ง",
+                                    value:
+                                        "24/11/2024 13:20 - 24/11/2024 21:20"),
+                                renderDistance(
+                                    icon: Icons.add_a_photo_rounded,
+                                    text: "ที่อยู่ผู้รับ",
+                                    value:
+                                        "หมู่บ้าน เอกกวินทาวน์โฮม 26/9 ถนน เลียบคลองสอง แขวงบางชัน เขตคลองสามวา กุงเทพมหานคร 10510 // แขวงมีนบุรี เขตมีนบุรี กรุงเทพมหานคร 10510"),
+                                Divider(
+                                  color: AppTheme.black20,
+                                ),
+                                Wrap(
+                                  spacing: 16, // ระยะห่างระหว่าง Item
+                                  runSpacing: 16, // ระยะห่างระหว่างบรรทัด
+                                  alignment: WrapAlignment.spaceBetween,
+                                  children: [
+                                    renderItemData(
+                                        count: "2", text: "รายการสินค้า"),
+                                    renderItemData(
+                                        count: "1", text: "จำนวนสินค้า"),
+                                    renderItemData(
+                                        count: "11",
+                                        text: "COD (บาท)",
+                                        color: AppTheme.orange),
+                                    renderItemData(
+                                        count: "11", text: "น้ำหนักรวม (kg.)"),
+                                    renderItemData(
+                                        count: "11", text: "ปริมาตร"),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    child: CardDetail(
-                      child: Column(
-                        children: [
-                          CardJobHeader(
-                            index: index + 1,
-                            toggle: visibleDetails[index],
-                            onTap: () {
-                              onHideShowDetailCart(index);
-                            },
-                            checkbox: (widget.drop == "0")
-                                ? Checkbox(
-                                    checkColor: AppTheme.white,
-                                    value: isChecked[index],
-                                    onChanged: (bool? value) {
-                                      onCheckBoxCard(index, value!);
-                                    },
-                                  )
-                                : null,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'DBR680100040${index}',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.black,
-                                  ),
-                                ),
-                                Center(
-                                  child: Text(
-                                    'โครงการจัดส่ง : โครงการจัดส่ง VSM',
-                                    style: TextStyle(
-                                      color: AppTheme.black60,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Visibility(
-                            visible: visibleDetails[index],
-                            child: Divider(
-                              color: AppTheme.black20,
-                              indent: 10,
-                              endIndent: 10,
-                            ),
-                          ),
-                          Visibility(
-                            visible: visibleDetails[index],
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  renderDistance(
-                                      icon: Icons.add_a_photo_rounded,
-                                      text: "ผู้ว่าจ้าง",
-                                      value: "ผู้ประกอบการ VSM"),
-                                  renderDistance(
-                                      icon: Icons.add_a_photo_rounded,
-                                      text: "วันที่จัดส่ง",
-                                      value:
-                                          "24/11/2024 13:20 - 24/11/2024 21:20"),
-                                  renderDistance(
-                                      icon: Icons.add_a_photo_rounded,
-                                      text: "ที่อยู่ผู้รับ",
-                                      value:
-                                          "หมู่บ้าน เอกกวินทาวน์โฮม 26/9 ถนน เลียบคลองสอง แขวงบางชัน เขตคลองสามวา กุงเทพมหานคร 10510 // แขวงมีนบุรี เขตมีนบุรี กรุงเทพมหานคร 10510"),
-                                  Divider(
-                                    color: AppTheme.black20,
-                                  ),
-                                  Wrap(
-                                    spacing: 16, // ระยะห่างระหว่าง Item
-                                    runSpacing: 16, // ระยะห่างระหว่างบรรทัด
-                                    alignment: WrapAlignment.spaceBetween,
-                                    children: [
-                                      renderItemData(
-                                          count: "2", text: "รายการสินค้า"),
-                                      renderItemData(
-                                          count: "1", text: "จำนวนสินค้า"),
-                                      renderItemData(
-                                          count: "11",
-                                          text: "COD (บาท)",
-                                          color: AppTheme.orange),
-                                      renderItemData(
-                                          count: "11",
-                                          text: "น้ำหนักรวม (kg.)"),
-                                      renderItemData(
-                                          count: "11", text: "ปริมาตร"),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-          color: AppTheme.white,
-          padding: EdgeInsets.all(16),
-          child: ElevatedButton(
-              onPressed: () {
-                if (widget.drop == "0") {
-                  context.go('/pickup?drop=${widget.drop}');
-                } else {
-                  context.go('/sendCustomer?drop=${widget.drop}');
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: (isChecked.length > 0)
-                    ? AppTheme.sppBlue
-                    : AppTheme.sppBlue40,
-              ),
-              child: Text(
-                'ยืนยันการส่งสินค้า',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.white,
-                ),
-              ))),
+      bottomNavigationBar: (widget.drop != "0")
+          ? null
+          : Container(
+              color: AppTheme.white,
+              padding: EdgeInsets.all(16),
+              child: ElevatedButton(
+                  onPressed: () {
+                    onClickConfirmItem();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: (isChecked.length > 0)
+                        ? AppTheme.sppBlue
+                        : AppTheme.sppBlue40,
+                  ),
+                  child: Text(
+                    'ยืนยันการส่งสินค้า',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.white,
+                    ),
+                  ))),
     );
   }
 

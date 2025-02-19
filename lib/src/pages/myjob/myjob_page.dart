@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tms/api/models/response/myjob_model.dart';
 import 'package:tms/api/providers/data_provider.dart';
 import 'package:tms/src/apptheme.dart';
 import 'package:tms/src/pages/myjob/widgets/card_detail.dart';
@@ -16,7 +15,6 @@ class MyjobPage extends ConsumerStatefulWidget {
 
 class _MyjobPageState extends ConsumerState<MyjobPage> {
   TextEditingController searchController = TextEditingController();
-  List<MyjobModel> postsAsync = List.empty();
   List<bool> visibleDetails = List.generate(0, (index) => false);
 
   void onHideShowDetailCart(int index) {
@@ -87,7 +85,7 @@ class _MyjobPageState extends ConsumerState<MyjobPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             height: MediaQuery.of(context).size.height * 0.65,
-            child: ref.watch(fetchAssetProvider).when(
+            child: ref.watch(fetchLogisticTransection).when(
                   data: (jobList) {
                     return ListView.builder(
                       itemCount: jobList.data?.length,
@@ -128,7 +126,7 @@ class _MyjobPageState extends ConsumerState<MyjobPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'S-VSM-20250201-002${job?.assetId ?? ""}',
+                                    '${job?.logisticTransectionCode ?? ""}',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,

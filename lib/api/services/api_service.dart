@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tms/api/models/request/asset_req.dart';
-import 'package:tms/api/models/response/asset_model.dart';
+import 'package:tms/api/models/request/logistic_transection_req.dart';
 import 'package:tms/api/models/response/auth_login_model.dart';
-import 'package:tms/api/models/response/myjob_model.dart';
+import 'package:tms/api/models/response/logistic_transection_model.dart';
 import 'package:tms/src/prefs_and_app_data.dart';
 import '../core/dio_provider.dart';
 
@@ -79,12 +78,13 @@ class ApiService {
     }
   }
 
-  //*********** Test Asset ***********//
-  Future<AssetModel> fetchAsset({AssetReq? data}) async {
+  //*********** List logistic transection ***********//
+  Future<LogisticTransectionModel> fetchLogisticTransection(
+      {LogisticTransectionReq? data}) async {
     try {
       final accessToken = await prefs.getAccessToken();
       final response = await _dio.get(
-        'assets',
+        'logistic-transection',
         options: Options(
           headers: {
             'Authorization': 'Bearer ${accessToken}',
@@ -92,7 +92,7 @@ class ApiService {
         ),
         queryParameters: data?.toMap(),
       );
-      return AssetModel.fromJson(response.data);
+      return LogisticTransectionModel.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to fetch asset');
     }

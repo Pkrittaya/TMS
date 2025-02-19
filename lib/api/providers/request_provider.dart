@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tms/api/models/request/asset_req.dart';
+import 'package:tms/api/models/request/logistic_transection_req.dart';
 
-final assetFilterProvider =
-    StateProvider<AssetReq>((ref) => AssetReq(page: 1, perPage: -1));
+final logisticTransectionFilterProvider = StateProvider<LogisticTransectionReq>(
+    (ref) => LogisticTransectionReq(page: 1, perPage: 10));
